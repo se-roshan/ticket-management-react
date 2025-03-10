@@ -43,7 +43,8 @@ const Login = () => {
         {/* Left Side: Image */}
         <div className="col-md-6 d-none d-md-block">
           <img
-            src={ticketIcon}  // ✅ Fixed Image Import
+            // src={ticketIcon}  // ✅ Fixed Image Import
+            src="https://images.pexels.com/photos/18264716/pexels-photo-18264716/free-photo-of-man-people-laptop-internet.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2" 
             alt="Ticket Management"
             className="img-fluid rounded"
           />
