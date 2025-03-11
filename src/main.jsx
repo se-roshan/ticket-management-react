@@ -6,7 +6,7 @@ import "bootstrap/dist/css/bootstrap.min.css"; // ✅ Global Bootstrap Import
 import "bootstrap/dist/js/bootstrap.bundle.min.js"; // ✅ Include Bootstrap JavaScript (for modals, tooltips, etc.)
 
 createRoot(document.getElementById('root')).render(
-  <StrictMode>
+  // <StrictMode>
     <App />
-  </StrictMode>,
+  // </StrictMode>,
 )

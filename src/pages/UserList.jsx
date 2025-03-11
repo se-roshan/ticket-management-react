@@ -1,36 +1,56 @@
+// 📄 UserList.jsx
 import React, { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { getAllUsers } from "../services/apiService";
+import { isAuthenticated } from "../services/authService";
 import Enumerable from "linq";
 
 const UserList = () => {
   const [users, setUsers] = useState([]);
+  const navigate = useNavigate();
 
   useEffect(() => {
+    if (!isAuthenticated()) {
+      navigate("/login");
+      return;
+    }
     fetchUsers();
   }, []);
 
   const fetchUsers = async () => {
     try {
       const response = await getAllUsers();
-      setUsers(response.data.data);
+      setUsers(response.data);
     } catch (error) {
       console.error(error);
+      alert("Failed to fetch users.");
     }
   };
 
-  // LINQ-like filter to get only active users
-  const activeUsers = Enumerable.from(users).where(user => user.isActive).toArray();
+   // LINQ-like filter to get only active users
+   const sortUsers = Enumerable.from(users).orderBy(user => user.name).toArray();
 
   return (
     <div className="container mt-4">
       <h2>User List</h2>
-      <ul className="list-group">
-        {activeUsers.map((user) => (
-          <li key={user.id} className="list-group-item">
-            {user.name} - {user.email}
-          </li>
-        ))}
-      </ul>
+      <table className="table table-bordered">
+        <thead className="table-dark">
+          <tr>
+            <th>ID</th>
+            <th>Name</th>
+            <th>Email</th>
+          </tr>
+        </thead>
+        <tbody>
+          {sortUsers.map((user) => (
+            <tr key={user.id}>
+              <td>{user.id}</td>
+              <td>{user.name}</td>
+              <td>{user.email}</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
     </div>
   );
 };

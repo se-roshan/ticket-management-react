@@ -1,3 +1,4 @@
+//-- InputFiled.jsx
 import React from "react";
 
 const InputField = ({ label, type, name, value, onChange }) => {
