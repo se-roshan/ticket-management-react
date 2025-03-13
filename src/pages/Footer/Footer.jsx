@@ -38,7 +38,7 @@ export default function Footer() {
                 <h6 className="fw-bold text-dark">Follow Us</h6>
                 <ul className="list-unstyled">
                   <li>
-                    <a href="https://github.com/hiteshchoudhary" className="text-muted text-decoration-none" target="_blank" rel="noreferrer">GitHub</a>
+                    <a href="https://github.com/se-roshan" className="text-muted text-decoration-none" target="_blank" rel="noreferrer">GitHub</a>
                   </li>
                   <li>
                     <Link to="/" className="text-muted text-decoration-none">Discord</Link>

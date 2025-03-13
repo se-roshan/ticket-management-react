@@ -11,7 +11,10 @@ import "bootstrap/dist/css/bootstrap.min.css";
 const ticketIcon = "/images/Ticket-Management.jpeg"; // Ensure image path is correct
 
 const Login = () => {
-  const [credentials, setCredentials] = useState({ emailOrContactNo: "", password: "" });
+  const [credentials, setCredentials] = useState({
+    emailOrContactNo: "",
+    password: "",
+  });
   const [showPassword, setShowPassword] = useState(false);
   const navigate = useNavigate();
 
@@ -46,7 +49,11 @@ const Login = () => {
       <div className="row justify-content-center align-items-center">
         {/* Left Side: Image */}
         <div className="col-md-6 d-none d-md-block">
-          <img src={ticketIcon} alt="Ticket Management" className="img-fluid rounded" />
+          <img
+            src={ticketIcon}
+            alt="Ticket Management"
+            className="img-fluid rounded"
+          />
         </div>
 
         {/* Right Side: Login Form */}
@@ -54,16 +61,17 @@ const Login = () => {
           <div className="card shadow-lg p-4">
             <h2 className="text-center mb-4">Login</h2>
             <form onSubmit={handleSubmit}>
-              <InputField
+              {/* <InputField
                 label="Email or Contact No"
                 type="text"
                 name="emailOrContactNo"
                 value={credentials.emailOrContactNo}
                 onChange={handleChange}
-              />
-
+                className="form-control"
+                placeholder="Enter your Email or Contact No"
+              /> */}
               {/* Password Field with Eye Icon */}
-              <div className="mb-3 position-relative">
+              {/* <div className="mb-3 position-relative">
                 <label className="form-label">Password</label>
                 <div className="input-group">
                   <input
@@ -82,9 +90,32 @@ const Login = () => {
                     <FontAwesomeIcon icon={showPassword ? faEyeSlash : faEye} />
                   </button>
                 </div>
-              </div>
+              </div> */}
 
-              <button type="submit" className="btn btn-success w-100">Login</button>
+              {/* for email or contact no */}
+              <InputField
+                label="Email or Contact No"
+                type="text"
+                name="emailOrContactNo"
+                value={credentials.emailOrContactNo}
+                onChange={handleChange}
+                placeholder="Enter your Email or Contact No"
+              />
+
+              {/* for Password */}
+              <InputField
+                label="Password"
+                type={showPassword ? "text" : "password"} //Toggle Password Visibility
+                name="password"
+                value={credentials.password}
+                onChange={handleChange}
+                placeholder="Enter your password"
+                rightIcon={showPassword ? faEyeSlash : faEye} // Show/Hide Icon
+                onRightIconClick={togglePasswordVisibility}   // Toggle Function
+              />
+              <button type="submit" className="btn btn-success w-100">
+                Login
+              </button>
             </form>
             <p className="text-center mt-3">
               Don't have an account? <Link to="/register">Register here</Link>

@@ -5,6 +5,7 @@ import Register from "./pages/Register";
 import Login from "./pages/Login";
 import UserList from "./pages/UserList";
 import Dashboard from "./pages/Dashboard/dashboard"; 
+import MyProfile from "./pages/Profile/Profile"
 import Layout from "./Layout";
 import { isAuthenticated } from "./services/authService"; 
 
@@ -14,20 +15,6 @@ const ProtectedRoute = ({ children }) => {
 
 const App = () => {
   return (
-    // <Router>
-    //   <Routes>
-    //     {/* Redirect root to login */}
-    //     <Route path="/" element={<Navigate to="/login" />} />
-    //     <Route path="/register" element={<Register />} />
-    //     <Route path="/login" element={<Login />} />
-
-    //     {/* Layout with Nested Routes */}
-    //     <Route path="/" element={<Layout />}>
-    //       <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
-    //       <Route path="/users" element={<ProtectedRoute><UserList /></ProtectedRoute>} />
-    //     </Route>
-    //   </Routes>
-    // </Router>
     <Router>
       <Routes>
         {/* Independent Routes (Without Layout) */}
@@ -39,6 +26,8 @@ const App = () => {
           <Route index element={<Navigate to="/dashboard" />} />
           <Route path="dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
           <Route path="users" element={<ProtectedRoute><UserList /></ProtectedRoute>} />
+          <Route path="/profile" element={<ProtectedRoute><MyProfile /></ProtectedRoute>} />
+
         </Route>
 
         {/* Redirect unknown routes */}

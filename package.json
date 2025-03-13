@@ -16,10 +16,13 @@
     "bootstrap": "^5.3.3",
     "enumerable": "^0.0.1",
     "font-awesome": "^4.7.0",
+    "jquery": "^3.7.1",
     "linq": "^4.0.3",
+    "moment": "^2.30.1",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
-    "react-router-dom": "^7.3.0"
+    "react-router-dom": "^7.3.0",
+    "select2": "^4.1.0-rc.0"
   },
   "devDependencies": {
     "@eslint/js": "^9.21.0",
