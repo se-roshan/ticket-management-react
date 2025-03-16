@@ -1,0 +1,44 @@
+/* Custom Tooltip Styling */
+[data-title] {
+    position: relative;
+    cursor: pointer;
+}
+
+[data-title]:hover::before {
+    content: attr(data-title);
+    position: absolute;
+    /* bottom: -35px; */
+    top: 40px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: inline-block;
+    padding: 6px 12px;
+    border-radius: 5px;
+    background: rgba(0, 0, 0, 0.8);
+    color: #fff;
+    font-size: 13px;
+    font-family: sans-serif;
+    white-space: pre;
+    z-index: 1000;
+    width: 200px;
+    text-align: center;
+    visibility: visible;
+    opacity: 1;
+}
+
+[data-title]:hover::after {
+    content: '';
+    position: absolute;
+    bottom: -10px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: inline-block;
+    border: 8px solid transparent;
+    border-top: 8px solid rgba(0, 0, 0, 0.8);
+    z-index: 1000;
+}
+
+/* Prevent tooltip overlap in buttons */
+button[data-title]:hover {
+    position: relative;
+}
