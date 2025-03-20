@@ -208,6 +208,17 @@ export const registerUser = async (userData) => {
   }
 };
 
+
+export const updateProfileDetails = async (profileData) => {
+  try {
+    const url = getUrl("/User/AddUpdateUser"); // ✅ Fix: Use getUrl()
+    const response = await api.post(url, profileData,axiosApiConfig());
+    return response.data; // ✅ Ensure response data is returned
+  } catch (error) {
+    console.error("Update error", error);
+    throw error;
+  }
+};
 // 🔹 Login User API
 export const loginUser = async (credentials) => {
   try {
