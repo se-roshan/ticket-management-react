@@ -1,9 +1,9 @@
 import {
   fetchUserDetails,
   uploadProfilePicture,
-  removeProfilePicture,
-  changePassword,
-  updateProfileDetails as updateProfileAPI
+  removeProfilePicture as removeProfileAPI , 
+  updateProfileDetails as updateProfileAPI,
+  changePasswordAPI
 } from "../../services/apiService";
 import { setUser, setLoading, setError, updateProfileImage, removeProfileImage } from "./userSlice";
 
@@ -46,17 +46,19 @@ export const updateProfileDetails = (ParamsData) => async (dispatch) => {
   }
 };
 //  Remove the user's profile picture.
-export const removeProfile = () => async (dispatch) => {
-  dispatch(setLoading(true));
+export const removeProfilePicture = (userId) => async (dispatch) => {
+  dispatch(setLoading(true)); // Start loading
   try {
-    await removeProfilePicture();// API call to remove profile picture
-    dispatch(removeProfileImage()); // Update Redux store by removing image
+    await removeProfileAPI(userId); // Call API with user ID
+    dispatch(removeProfileImage()); // ✅ Update Redux store
+    dispatch(getUserDetails()); // ✅ Refresh user data
   } catch (error) {
-    dispatch(setError(error.message));
+    dispatch(setError(error.message)); // Handle error
   } finally {
-    dispatch(setLoading(false));
+    dispatch(setLoading(false)); // Stop loading
   }
 };
+
 
 // Change the user's password.
 export const updatePassword = (newPassword) => async (dispatch) => {
@@ -68,5 +70,15 @@ export const updatePassword = (newPassword) => async (dispatch) => {
     dispatch(setError(error.message));
   } finally {
     dispatch(setLoading(false));
+  }
+};
+
+export const changePassword = (newPassword) => async (dispatch) => {
+  try {
+    await changePasswordAPI(newPassword);
+    alert("Password updated successfully!");
+  } catch (error) {
+    console.error("Error updating password:", error);
+    dispatch(setError(error.message));
   }
 };

@@ -4,14 +4,16 @@ import { useDispatch, useSelector } from "react-redux";
 import {
   getUserDetails,
   uploadProfile,
-  removeProfile,
+  removeProfilePicture,
   updateProfileDetails,
+  changePassword,
 } from "../../features/user/userActions";
 import InputField from "../../components/InputField"; // InputField component
 import { Tooltip } from "bootstrap";
 import "../../styles/tooltip.css"; // Import custom tooltip styles
 import $ from "jquery"; // Import jQuery First
 import SelectField from "../../components/SelectField";
+import { faEye, faEyeSlash } from "@fortawesome/free-solid-svg-icons";
 
 function Profile() {
   const dispatch = useDispatch();
@@ -25,6 +27,7 @@ function Profile() {
   const [isEditing, setIsEditing] = useState(false); // Toggle edit mode
   const [updating, setUpdating] = useState(false);
   const [btnTitle, setbtnTitle] = useState("");
+  const [btnPasswordTitle, setbtnPasswordTitle] = useState("");
 
   // Gender Dropdown Options
   const genderOptions = [
@@ -40,6 +43,15 @@ function Profile() {
     contactNo: "",
     gender: "",
   });
+
+  const [showPasswordFields, setShowPasswordFields] = useState(false); // Toggle Password Inputs
+  const [passwordData, setPasswordData] = useState({
+    password: "",
+    confirmPassword: "",
+  });
+  const [showPassword, setShowPassword] = useState(false); // Toggle Password Visibility
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false); // Toggle Password Visibility
+  const [passwordError, setPasswordError] = useState(""); // Store validation error
 
   // Fetch user details on page load (component mount)
   useEffect(() => {
@@ -74,12 +86,6 @@ function Profile() {
       (!data.gender || data.gender === "Select Gender"
         ? "Please Select Gender" + "\n"
         : "");
-
-    //-- way 2
-    // if (!data.name.trim()) title += "Please Enter Employee Name\n";
-    // if (!data.contactNo.trim()) title += "Please Enter Mobile No\n";
-    // if (!data.email.trim()) title += "Please Enter Email ID\n";
-    // if (!data.gender) title += "Please Select Gender\n";
 
     setbtnTitle(title.trim());
   };
@@ -119,8 +125,11 @@ function Profile() {
   const handleRemoveImage = async () => {
     if (window.confirm("Are you sure you want to remove your profile image?")) {
       setUploading(true);
-      await dispatch(removeProfile());
-      await dispatch(getUserDetails()); // ✅ Refresh user details after removing image
+      try {
+        await dispatch(removeProfilePicture(user.id)); // ✅ Pass user ID
+      } catch (error) {
+        console.error("Error removing profile image:", error);
+      }
       setUploading(false);
       setShowDropdown(false);
     }
@@ -159,6 +168,58 @@ function Profile() {
       contactNo: user?.contactNo || "",
     });
     setIsEditing(false); // Disable editing after canceling
+  };
+
+  // Handle Password Input Change & Validation
+  const handlePasswordChange = (e) => {
+    const { name, value } = e.target;
+    const updatedPasswordData = { ...passwordData, [name]: value };
+    setPasswordData(updatedPasswordData);
+
+    // Update tooltip dynamically
+    updatePasswordTooltip(updatedPasswordData);
+  };
+
+  // Ensure tooltip updates when passwordData changes
+  useEffect(() => {
+    updatePasswordTooltip(passwordData);
+  }, [passwordData]);
+
+  // Update tooltip messages dynamically based on input values
+  const updatePasswordTooltip = (data) => {
+    let title = "";
+    title =
+      (!data.password.trim() ? "Please Enter Password" + "\n" : "") +
+      (!data.confirmPassword.trim()
+        ? "Please Enter Confirm Password" + "\n"
+        : "") +
+      (data.password.trim() &&
+      data.confirmPassword.trim() &&
+      data.password !== data.confirmPassword
+        ? "Passwords do not match!" + "\n"
+        : "");
+    setbtnPasswordTitle(title.trim());
+  };
+
+  const togglePasswordVisibility = () => {
+    setShowPassword(!showPassword);
+  };
+
+  const toggleConfirmPasswordVisibility = () => {
+    setShowConfirmPassword(!showConfirmPassword);
+  };
+
+  // Handle Password Update
+  const handleUpdatePassword = async () => {
+    setUpdating(true);
+    try {
+      await dispatch(changePassword(passwordData.password));
+      alert("Password changed successfully!");
+      setShowPasswordFields(false);
+    } catch (error) {
+      console.error("Error updating password:", error);
+    }
+    setUpdating(false);
   };
 
   return (
@@ -345,7 +406,7 @@ function Profile() {
                     {user?.profileImage && (
                       <button
                         className="dropdown-item text-danger"
-                        onClick={handleRemoveImage}
+                        onClick={() => handleRemoveImage(user.id)}
                       >
                         Remove photo
                       </button>
@@ -361,6 +422,122 @@ function Profile() {
                   accept="image/*"
                   onChange={handleUploadImage}
                 />
+              </div>
+            </div>
+          </div>
+        )}
+      </div>
+
+      <div className="mt-2">
+        <h3>Change Password</h3>
+        {loading ? ( // Show loading while fetching user data
+          <div className="text-center">
+            <div className="spinner-border text-primary" role="status">
+              <span className="visually-hidden">Loading...</span>
+            </div>
+          </div>
+        ) : (
+          <div className="row">
+            {/* User Info */}
+            <div className="col-md-8">
+              <div className="card p-3">
+                {updating ? (
+                  <div>
+                    <div className="spinner-border text-primary" role="status">
+                      <span className="visually-hidden">Updating...</span>
+                    </div>
+                  </div>
+                ) : (
+                  <div>
+                    {showPasswordFields ? (
+                      <div className="row">
+                        <div className="col-md-6">
+                          {/* <InputField
+                            label="New Password"
+                            type={showPassword ? "text" : "password"}
+                            name="password"
+                            value={passwordData.password}
+                            onChange={handlePasswordChange}
+                          /> */}
+                          {/* for Password */}
+                          <InputField
+                            label="Password"
+                            type={showPassword ? "text" : "password"} //Toggle Password Visibility
+                            name="password"
+                            value={passwordData.password}
+                            onChange={handlePasswordChange}
+                            placeholder="Enter  password"
+                            rightIcon={showPassword ? faEyeSlash : faEye} // Show/Hide Icon
+                            onRightIconClick={togglePasswordVisibility} // Toggle Function
+                          />
+                        </div>
+                        <div className="col-md-6">
+                          {/* <InputField
+                            label="Confirm Password"
+                            type={showPassword ? "text" : "password"}
+                            name="confirmPassword"
+                            value={passwordData.confirmPassword}
+                            onChange={handlePasswordChange}
+                          /> */}
+                           {/* for Password */}
+                           <InputField
+                            label="Confirm Password"
+                            type={showConfirmPassword ? "text" : "password"} //Toggle Password Visibility
+                            name="confirmPassword"
+                            value={passwordData.confirmPassword}
+                            onChange={handlePasswordChange}
+                            placeholder="Enter Confirm password"
+                            rightIcon={showConfirmPassword ? faEyeSlash : faEye} // Show/Hide Icon
+                            onRightIconClick={toggleConfirmPasswordVisibility} // Toggle Function
+                          />
+                        </div>
+
+                        <div className=" d-flex align-items-center">
+                          <>
+                            {btnPasswordTitle ? (
+                              // ✅ Wrapping disabled button inside a <span> to show tooltip
+                              <span
+                                data-title={btnPasswordTitle}
+                                className="tooltip-wrapper"
+                              >
+                                <button
+                                  type="button"
+                                  className="btn btn-secondary disabled"
+                                >
+                                  <i className="fas fa-save me-1"></i> Update
+                                </button>
+                              </span>
+                            ) : (
+                              <button
+                                className="btn btn-success"
+                                onClick={handleUpdatePassword}
+                              >
+                                <i className="fas fa-save me-1"></i> Update
+                              </button>
+                            )}
+                            <button
+                              className="btn btn-warning ms-2"
+                              onClick={handleCancel}
+                              data-bs-toggle="tooltip"
+                              data-bs-title="Cancel and Reset"
+                            >
+                              <i className="fas fa-times me-1"></i> Cancel
+                            </button>
+                          </>
+                        </div>
+                      </div>
+                    ) : (
+                      <div className=" d-flex align-items-center">
+                        <button
+                          className="btn btn-primary"
+                          onClick={() => setShowPasswordFields(true)}
+                        >
+                          Change Password
+                        </button>
+                      </div>
+                    )}
+                  </div>
+                )}
               </div>
             </div>
           </div>
